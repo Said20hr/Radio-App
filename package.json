@@ -34,6 +34,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-social-buttons": "^1.2.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-wave-visual": "^1.0.0",
     "react-native-web": "~0.18.9"
   },
   "devDependencies": {

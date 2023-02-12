@@ -5,7 +5,7 @@ import {  AppStateStatus,AppState,AppRegistry,View, Button, Text,TouchableOpacit
 import { Asset } from 'expo-asset';
 import { Audio } from 'expo-av';
 import Colors from '../constants/Colors';
-
+import Waveform from 'react-native-wave-visual';
 
 
 
@@ -26,6 +26,8 @@ export default function MusicPlayer() {
       setIsPlaying(true);
     })();
 
+
+    
     AppState.addEventListener('change', handleAppStateChange);
 
     return () => {
