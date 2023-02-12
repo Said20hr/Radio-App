@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, Text,TouchableOpacity, Image,StyleSheet,ImageBackground, Animated } from 'react-native';
+
+import {  AppStateStatus,AppState,AppRegistry,View, Button, Text,TouchableOpacity, 
+  Image,StyleSheet,ImageBackground, Animated } from 'react-native';
 import { Asset } from 'expo-asset';
 import { Audio } from 'expo-av';
 import Colors from '../constants/Colors';
@@ -11,58 +13,132 @@ import Colors from '../constants/Colors';
 
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [song, setSong] = useState(null);
-
+  const [isMuted, setIsMuted] = useState(false);
+  const [soundObject, setSoundObject] = useState(null);
   useEffect(() => {
     (async () => {
-      // Load the song from a URL or from the local file system
-      const songAsset = Asset.fromModule(require('../assets/songs/song.mp3'));
-      await songAsset.downloadAsync();
+      // Load the audio from the URL
       const soundObject = new Audio.Sound();
-      await soundObject.loadAsync(songAsset);
-      setSong(soundObject);
+      await soundObject.loadAsync({ uri: 'http://live.itech.host:7039/stream' });
+      setSoundObject(soundObject);
+      // Automatically start playing the audio when the component loads
+      await soundObject.playAsync();
+      setIsPlaying(true);
     })();
+
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      if (soundObject) {
+        soundObject.stopAsync();
+      }
+      AppState.removeEventListener('change', handleAppStateChange);
+    };
   }, []);
-  const PlayButton = ({ onPress ,isPlaying }) => (
+
+  const handleAppStateChange = async (nextAppState) => {
+    if (nextAppState === 'background') {
+      if (soundObject) {
+        await soundObject.setIsMutedAsync(true);
+        setIsMuted(true);
+      }
+    } else if (nextAppState === 'active') {
+      if (soundObject) {
+        await soundObject.setIsMutedAsync(false);
+        setIsMuted(false);
+      }
+    }
+  };
+
+
+
+  const PlayButton = ({ onPress, isPlaying }) => (
     <TouchableOpacity onPress={onPress}>
-    <Image
-        style={{ width: 64, height: 64  }}
-        source={isPlaying ? require('../assets/images/pause.png') : require('../assets/images/play.png')}
-    
-    />
+      <View style={styles.row}>
+        <Image
+          style={{ width: 72, height: 72, margin: 15 }}
+          source={require('../assets/images/StopButton.png')}
+        />
+        <Image
+          style={{ width: 96, height: 96 }}
+          source={isMuted ? require('../assets/images/PauseButton.png') : require('../assets/images/Playbutton2.png')}
+        />
+        <Image
+          style={{ width: 72, height: 72, margin: 15 }}
+          source={require('../assets/images/PauseButton.png')}
+        />
+      </View>
     </TouchableOpacity>
   );
 
-  const togglePlayback = async () => {
-    if (isPlaying) {
-      await song.pauseAsync();
-      setIsPlaying(false);
+  const toggleMute = async () => {
+    if (isMuted) {
+      await soundObject.setIsMutedAsync(false);
+      setIsMuted(false);
     } else {
-      await song.playAsync();
-      setIsPlaying(true);
+      await soundObject.setIsMutedAsync(true);
+      setIsMuted(true);
     }
   };
-  const background = require("../assets/images/bg-6.jpg");
+
+ 
+
+
+
+  const background = require("../assets/images/FOND-APP1.png");
 
   
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-       <ImageBackground source={background} resizeMode="cover" style={styles.background}>
+       <ImageBackground source={background} resizeMode="stretch" style={styles.background}>
       <Animated.Image
-        style={{ width: 200, height: 200 ,borderRadius: 250,marginBottom: 20 , borderWidth: 3, padding:5,borderColor: 'lightgray', }}
-        source={require('../assets/images/matoub.jpg')}
+        style={{  width: 300,
+          height: 110,
+          resizeMode: 'stretch',}}
+        source={require('../assets/images/Livesrid1copie.png')}
       />
-      <Text style={{color : '#FFFFFC',fontSize: 30,marginBottom:10,fontWeight:'600'}}>Matoub Lounes</Text>
-      <Text style={{color : '#FFFFFF',fontSize: 20,marginBottom:100,fontWeight:"300"}}>- Thigri tadjalt - </Text>
 
-       <PlayButton  onPress={togglePlayback} isPlaying={isPlaying}/>
-      
-      
-      
+<PlayButton onPress={toggleMute} />
+       
+       <View style={styles.socialMedia}>
+     <Image
+        style={{ width: 52, height: 52,margin:2  }}
+        source={ require('../assets/images/facebook-icone.png')}
+    
+    />
+    <Image
+        style={{ width: 52, height: 52,margin:2  }}
+        source={ require('../assets/images/youtube-icone.png')}
+    
+    />
+    <Image
+        style={{ width: 52, height: 52,margin:2  }}
+        source={ require('../assets/images/Twitter-icone.png')}
+    
+    />
+    <Image
+        style={{ width: 52, height: 52,margin:2  }}
+        source={ require('../assets/images/Tictoc-icone.png')}
+    
+    />
+    <Image
+        style={{ width: 52, height: 52,margin:2  }}
+        source={ require('../assets/images/mail-icone.png')}
+    
+    />
+   <Image
+        style={{ width: 52, height: 52,margin:2  }}
+        source={ require('../assets/images/web-icone.png')}
+    
+    />
+    </View>
+     
       </ImageBackground>
       </View>
+      
     </View>
+    
   );
 }
 
@@ -72,30 +148,33 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#25292e',
     alignItems: 'center',
+  
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop : '38 %'
   },
   imageContainer: {
     flex: 1,
-    paddingTop: 0,
     width : '100%',
+    
   },
   background: {
     flex: 1,
-    justifyContent: "center",
-    paddingTop : 60,
+    paddingTop : '82 %',
     alignItems:'center'
   },
   image:{
    
-    marginBottom: '20%',
+    marginBottom: '32 %',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 120,
-    height:120,
-    borderRadius:10
+   
     
   },
   buttonStyle:{
-    marginBottom: '20%',
+    marginBottom: '30%',
     justifyContent: 'center',
     alignItems: 'center',
     width: 320,
@@ -103,14 +182,22 @@ const styles = StyleSheet.create({
     borderRadius:10,
    
   },
+  socialMedia: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingTop:'7%',
+    marginLeft:5
+   
+  },
   box: {
-    width: 100,
+    width: 200,
     height: 100,
     borderRadius: 50,
     borderColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
   },
+ 
 
 
 });
