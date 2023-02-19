@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import {  AppStateStatus,AppState,AppRegistry,View, Button, Text,TouchableOpacity, 
-  Image,StyleSheet,ImageBackground, Animated } from 'react-native';
+  Image,StyleSheet,ImageBackground, Animated,Linking } from 'react-native';
 import { Asset } from 'expo-asset';
 import { Audio } from 'expo-av';
 import Colors from '../constants/Colors';
@@ -17,11 +17,11 @@ export default function MusicPlayer() {
   const [soundObject, setSoundObject] = useState(null);
   useEffect(() => {
     (async () => {
-      // Load the audio from the URL
+      const response = await fetch('https://radiorebelle.com/api/stream-url');
+      const data = await response.json();
       const soundObject = new Audio.Sound();
-      await soundObject.loadAsync({ uri: 'http://live.itech.host:7039/stream' });
+      await soundObject.loadAsync({ uri: data.url });
       setSoundObject(soundObject);
-      // Automatically start playing the audio when the component loads
       await soundObject.playAsync();
       setIsPlaying(true);
     })();
@@ -54,24 +54,34 @@ export default function MusicPlayer() {
 
 
 
-  const PlayButton = ({ onPress, isPlaying }) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.row}>
-        <Image
-          style={{ width: 72, height: 72, margin: 15 }}
-          source={require('../assets/images/StopButton.png')}
-        />
-        <Image
-          style={{ width: 96, height: 96 }}
-          source={isMuted ? require('../assets/images/PauseButton.png') : require('../assets/images/Playbutton2.png')}
-        />
-        <Image
-          style={{ width: 72, height: 72, margin: 15 }}
-          source={require('../assets/images/PauseButton.png')}
-        />
-      </View>
-    </TouchableOpacity>
-  );
+  const PlayButton = ({ onPress, isPlaying, isLoading }) => (
+  <TouchableOpacity onPress={onPress}>
+    <View style={styles.row}>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#fff" style={{ margin: 15 }} />
+      ) : (
+        <>
+          <Image
+            style={{ width: 72, height: 72, margin: 15 }}
+            source={require('../assets/images/StopButton.png')}
+          />
+          <Image
+            style={{ width: 96, height: 96 }}
+            source={
+              isMuted
+                ? require('../assets/images/PauseButton.png')
+                : require('../assets/images/Playbutton2.png')
+            }
+          />
+          <Image
+            style={{ width: 72, height: 72, margin: 15 }}
+            source={require('../assets/images/PauseButton.png')}
+          />
+        </>
+      )}
+    </View>
+  </TouchableOpacity>
+);
 
   const toggleMute = async () => {
     if (isMuted) {
@@ -103,37 +113,49 @@ export default function MusicPlayer() {
 
 <PlayButton onPress={toggleMute} />
        
-       <View style={styles.socialMedia}>
-     <Image
+  <View style={styles.socialMedia}>
+
+  <TouchableOpacity onPress={() => Linking.openURL('fb://page/115202690274487')}>
+    <Image
         style={{ width: 52, height: 52,margin:2  }}
         source={ require('../assets/images/facebook-icone.png')}
-    
-    />
+     />
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => Linking.openURL('vnd.youtube://www.youtube.com')}>
     <Image
         style={{ width: 52, height: 52,margin:2  }}
         source={ require('../assets/images/youtube-icone.png')}
     
     />
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => Linking.openURL('twitter://user?screen_name=rebelle_fm')}>
     <Image
         style={{ width: 52, height: 52,margin:2  }}
         source={ require('../assets/images/Twitter-icone.png')}
     
     />
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => Linking.openURL('tiktok://user?screen_name=USERNAME')}>
     <Image
         style={{ width: 52, height: 52,margin:2  }}
         source={ require('../assets/images/Tictoc-icone.png')}
     
     />
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => Linking.openURL('mailto:contact@radioRebelle.com')}>
     <Image
         style={{ width: 52, height: 52,margin:2  }}
         source={ require('../assets/images/mail-icone.png')}
     
     />
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => Linking.openURL('https://radiorebelle.com/')}>
    <Image
         style={{ width: 52, height: 52,margin:2  }}
         source={ require('../assets/images/web-icone.png')}
     
     />
+    </TouchableOpacity>
     </View>
      
       </ImageBackground>

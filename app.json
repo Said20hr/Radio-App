@@ -19,13 +19,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "radio.rebelle"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/radio.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "radio.rebelle"
     },
     "web": {
       "favicon": "./assets/images/radio.png"
