@@ -31,6 +31,11 @@
     },
     "web": {
       "favicon": "./assets/images/radio.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9bfca18e-93e1-4d52-8007-d419d9d11282"
+      }
     }
   }
 }

@@ -54,34 +54,24 @@ export default function MusicPlayer() {
 
 
 
-  const PlayButton = ({ onPress, isPlaying, isLoading }) => (
-  <TouchableOpacity onPress={onPress}>
-    <View style={styles.row}>
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#fff" style={{ margin: 15 }} />
-      ) : (
-        <>
-          <Image
-            style={{ width: 72, height: 72, margin: 15 }}
-            source={require('../assets/images/StopButton.png')}
-          />
-          <Image
-            style={{ width: 96, height: 96 }}
-            source={
-              isMuted
-                ? require('../assets/images/PauseButton.png')
-                : require('../assets/images/Playbutton2.png')
-            }
-          />
-          <Image
-            style={{ width: 72, height: 72, margin: 15 }}
-            source={require('../assets/images/PauseButton.png')}
-          />
-        </>
-      )}
-    </View>
-  </TouchableOpacity>
-);
+  const PlayButton = ({ onPress, isPlaying }) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.row}>
+        <Image
+          style={{ width: 72, height: 72, margin: 15 }}
+          source={require('../assets/images/StopButton.png')}
+        />
+        <Image
+          style={{ width: 96, height: 96 }}
+          source={isMuted ? require('../assets/images/PauseButton.png') : require('../assets/images/Playbutton2.png')}
+        />
+        <Image
+          style={{ width: 72, height: 72, margin: 15 }}
+          source={require('../assets/images/PauseButton.png')}
+        />
+      </View>
+    </TouchableOpacity>
+  );
 
   const toggleMute = async () => {
     if (isMuted) {
